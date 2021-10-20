@@ -1,0 +1,15 @@
+export default {
+  blue: '#2F74F2',
+  black: '#050505',
+  white: '#FFFFFF',
+  screenBackground: '#F4F4F4',
+  textFieldBackground: '#F0F2F5',
+  darkGrey: '#65676A',
+  mediumGrey: '#8E949C',
+  lightGrey: '#E4E6EB',
+  blueActive: '#4E8CFD',
+  lightBlue: '#EFF4FE',
+  confirmation: '#34C759',
+  error: '#E55548',
+  warning: '#FFD769',
+};

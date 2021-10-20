@@ -17,7 +17,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fabiansimon.payuca-case-study"
     },
     "android": {
       "adaptiveIcon": {
