@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -52,6 +52,7 @@ function EmailScreen({ navigation }) {
             If you were invited via email, use that address.
           </Text>
           <TextInput
+            onChangeText={(value) => {}}
             theme={{ colors: { primary: colors.blue } }}
             style={styles.textField}
             underlineColor={colors.darkGrey}
@@ -61,16 +62,20 @@ function EmailScreen({ navigation }) {
             keyboardType="email-address"
           />
           <CheckBoxTile
+            onCheckPress={() => {}}
             style={{ paddingBottom: 16 }}
-            isChecked={true}
+            // isChecked={cb1}
             interactiveString={'terms & conditions'}
             onPress={() => navigation.navigate(routes.LEGAL_SCREEN)}
           />
-
           <CheckBoxTile
-            isChecked={false}
+            onCheckPress={() => {}}
+            style={{ paddingBottom: 16 }}
+            // isChecked={cb2}
             interactiveString={'privacy policy'}
+            onPress={() => navigation.navigate(routes.LEGAL_SCREEN)}
           />
+
           <View style={styles.button}>
             <PrimaryButton
               onPress={() => this.viewPager.setPage(1)}

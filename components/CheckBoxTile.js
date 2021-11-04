@@ -11,16 +11,20 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 import textStyle from '../config/textStyle';
 
-function CheckBoxTile({ interactiveString, onPress, enabled = true, style }) {
-  const [isSelected, setSelection] = useState(false);
-
+function CheckBoxTile({
+  interactiveString,
+  onPress,
+  isChecked,
+  style,
+  onCheckPress,
+}) {
   return (
     <View style={[styles.container, style]}>
       <TouchableHighlight
         underlayColor={colors.lightBlue}
-        onPress={() => setSelection(!isSelected)}
+        onPress={onCheckPress}
       >
-        <View style={isSelected ? styles.activeBox : styles.inactiveBox}>
+        <View style={isChecked ? styles.activeBox : styles.inactiveBox}>
           <MaterialCommunityIcons name="check" size={20} color="white" />
         </View>
       </TouchableHighlight>

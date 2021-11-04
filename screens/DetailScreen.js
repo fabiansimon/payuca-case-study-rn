@@ -32,7 +32,12 @@ function DetailScreen({ navigation, route }) {
           Garage details
         </Text>
         <WhiteContainer>
-          <DetailsLabel icon="garage" label="Name" title={route.params.title} />
+          <DetailsLabel
+            icon="garage"
+            label="Name"
+            title={route.params.title}
+            twoLines={true}
+          />
           <DetailsLabel
             icon="pin"
             label="Address"

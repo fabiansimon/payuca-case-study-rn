@@ -56,16 +56,21 @@ function HelpScreen({ navigation }) {
           <WhiteContainer>
             <DetailsLabel
               edit={true}
+              onPress={() => navigation.navigate(routes.FAQ_SCREEN)}
               title="How can I change my license plate and be happy about it?"
-            />
-            <DetailsLabel
-              edit={true}
-              title="How can I change my license plate and be happy about it?"
+              twoLines={true}
             />
             <DetailsLabel
               edit={true}
               onPress={() => navigation.navigate(routes.FAQ_SCREEN)}
               title="How can I change my license plate and be happy about it?"
+              twoLines={true}
+            />
+            <DetailsLabel
+              edit={true}
+              onPress={() => navigation.navigate(routes.FAQ_SCREEN)}
+              title="How can I change my license plate and be happy about it?"
+              twoLines={true}
             />
           </WhiteContainer>
         </SafeAreaView>

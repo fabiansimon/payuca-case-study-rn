@@ -11,6 +11,7 @@ function DetailsLabel({
   label,
   lPosition = 'top',
   title,
+  twoLines = false,
   onPress = () => console.log('tapped'),
 }) {
   return (
@@ -31,37 +32,46 @@ function DetailsLabel({
             />
           )}
 
-          {lPosition == 'bottom' ? (
-            <View>
-              <Text style={[textStyle.headline4, { color: colors.black }]}>
-                {title}
-              </Text>
-              {label && (
-                <Text style={[textStyle.subtitle2, { color: colors.darkGrey }]}>
-                  {label}
+          <View style={{ flex: 1 }}>
+            {lPosition == 'bottom' ? (
+              <View>
+                <Text style={[textStyle.headline4, { color: colors.black }]}>
+                  {title}
                 </Text>
-              )}
-            </View>
-          ) : (
-            <View>
-              {label && (
-                <Text style={[textStyle.subtitle2, { color: colors.darkGrey }]}>
-                  {label}
+                {label && (
+                  <Text
+                    style={[textStyle.subtitle2, { color: colors.darkGrey }]}
+                  >
+                    {label}
+                  </Text>
+                )}
+              </View>
+            ) : (
+              <View>
+                {label && (
+                  <Text
+                    style={[textStyle.subtitle2, { color: colors.darkGrey }]}
+                  >
+                    {label}
+                  </Text>
+                )}
+                <Text
+                  numberOfLines={twoLines ? 2 : 1}
+                  style={[textStyle.headline4, { color: colors.black }]}
+                >
+                  {title}
                 </Text>
-              )}
-              <Text style={[textStyle.headline4, { color: colors.black }]}>
-                {title}
-              </Text>
-            </View>
+              </View>
+            )}
+          </View>
+          {edit && (
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={22}
+              color={colors.mediumGrey}
+            />
           )}
         </View>
-        {edit && (
-          <MaterialCommunityIcons
-            name="chevron-right"
-            size={22}
-            color={colors.mediumGrey}
-          />
-        )}
       </View>
     </TouchableHighlight>
   );
