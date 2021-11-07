@@ -2,7 +2,6 @@ import React from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
 import textStyle from '../config/textStyle';
-import routes from '../navigation/routes';
 import BackArrowButton from '../components/BackArrowButton';
 
 function FAQScreen({ navigation }) {

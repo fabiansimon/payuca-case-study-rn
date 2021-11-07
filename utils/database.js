@@ -1,5 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 
+
+// Update Reader
 export const updateReader = async (id) => {
   const db = firestore().collection('users').doc('wMDM68wLVShcQz6E8Vsd');
   const readerData = await db
@@ -15,14 +17,11 @@ export const updateReader = async (id) => {
     await db
       .collection('user-garage')
       .doc('06wy0CbQnzXAHVNjyzhr')
-      //   .doc('s')
       .collection('readers')
       .doc(readerId)
       .update({
         'is-open': true,
       });
-
-    console.log('finished');
   } catch (error) {
     console.error(error);
   }

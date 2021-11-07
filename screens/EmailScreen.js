@@ -20,12 +20,24 @@ import routes from '../navigation/routes';
 const CELL_COUNT = 4;
 
 function EmailScreen({ navigation }) {
+  // Code Input Hooks
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
+
+  // Email Input Hooks
+  const [emailIsValid, setEmailIsValid] = useState(true);
+  const [email, setEmail] = useState('');
+
+  // Checkbox State
+  const [cb1, setcb1] = useState();
+  const [cb2, setcb2] = useState();
+
+  // Animate to next Screen
+  const nextScreen = () => navigation.navigate(routes.APP_NAVIGATOR);
 
   return (
     <>
@@ -52,8 +64,18 @@ function EmailScreen({ navigation }) {
             If you were invited via email, use that address.
           </Text>
           <TextInput
-            onChangeText={(value) => {}}
-            theme={{ colors: { primary: colors.blue } }}
+            onChangeText={(text) => {
+              setEmail(text);
+              let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+              if (reg.test(text) === false) {
+                setEmailIsValid(false);
+              } else {
+                setEmailIsValid(true);
+              }
+            }}
+            theme={{
+              colors: { primary: emailIsValid ? colors.blue : colors.error },
+            }}
             style={styles.textField}
             underlineColor={colors.darkGrey}
             autoCapitalize="none"
@@ -61,24 +83,37 @@ function EmailScreen({ navigation }) {
             label="Email address"
             keyboardType="email-address"
           />
+          {emailIsValid ? (
+            <Text style={styles.errorText}></Text>
+          ) : (
+            <Text style={styles.errorText}>Invalid email address</Text>
+          )}
+
           <CheckBoxTile
-            onCheckPress={() => {}}
+            onCheckPress={() => {
+              setcb1(!cb1);
+            }}
             style={{ paddingBottom: 16 }}
-            // isChecked={cb1}
+            isChecked={cb1}
             interactiveString={'terms & conditions'}
             onPress={() => navigation.navigate(routes.LEGAL_SCREEN)}
           />
           <CheckBoxTile
-            onCheckPress={() => {}}
+            onCheckPress={() => {
+              setcb2(!cb2);
+            }}
             style={{ paddingBottom: 16 }}
-            // isChecked={cb2}
+            isChecked={cb2}
             interactiveString={'privacy policy'}
             onPress={() => navigation.navigate(routes.LEGAL_SCREEN)}
           />
 
           <View style={styles.button}>
             <PrimaryButton
-              onPress={() => this.viewPager.setPage(1)}
+              onPress={() => {
+                this.viewPager.setPage(1);
+                this.myTextInput.focus();
+              }}
               title={'Verify email'}
             />
           </View>
@@ -98,29 +133,39 @@ function EmailScreen({ navigation }) {
             An email Verification code has been sent to personal@mail.com
           </Text>
           <CodeField
-            ref={ref}
+            ref={(ref) => {
+              this.myTextInput = ref;
+            }}
             {...props}
-            // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
             value={value}
-            onChangeText={setValue}
+            onChangeText={(text) => {
+              setValue(text);
+              if (value.length == 3) {
+                nextScreen();
+              }
+            }}
             cellCount={CELL_COUNT}
             rootStyle={styles.codeFieldRoot}
             keyboardType="number-pad"
             textContentType="oneTimeCode"
+            placeholder="0"
+            placeholderTextColor={colors.lightGrey}
             renderCell={({ index, symbol, isFocused }) => (
-              <Text
-                key={index}
-                style={[styles.cell, isFocused && styles.focusCell]}
+              <View
                 onLayout={getCellOnLayoutHandler(index)}
+                key={index}
+                style={[styles.cellRoot, isFocused && styles.focusCell]}
               >
-                {symbol || (isFocused ? <Cursor /> : null)}
-              </Text>
+                <Text style={[textStyle.code, styles.cellText]}>
+                  {symbol || (isFocused ? <Cursor /> : null)}
+                </Text>
+              </View>
             )}
           />
 
           <TouchableOpacity
             underlayColor={colors.lightBlue}
-            onPress={() => navigation.navigate(routes.APP_NAVIGATOR)}
+            onPress={() => nextScreen()}
           >
             <Text style={[textStyle.headline4, styles.notReceivedText]}>
               Did not receive a code by email
@@ -155,6 +200,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 46,
   },
+  errorText: {
+    marginBottom: 22,
+    marginLeft: 12,
+    color: colors.error,
+    fontSize: 12,
+  },
   notReceivedText: {
     color: colors.blue,
     alignSelf: 'center',
@@ -162,25 +213,36 @@ const styles = StyleSheet.create({
   textField: {
     backgroundColor: colors.textFieldBackground,
     marginTop: 40,
-    marginBottom: 22,
+    marginBottom: 3,
     height: 56,
   },
   pagerView: {
     flex: 1,
   },
-  codeFieldRoot: { marginTop: 20 },
-  cell: {
-    width: 40,
-    height: 40,
-    fontSize: 24,
-    backgroundColor: colors.error,
-    textAlign: 'center',
-    borderBottomWidth: 2,
+  root: { padding: 20, minHeight: 300 },
+  codeFieldRoot: {
+    marginTop: 30,
+    marginBottom: 30,
+    width: 280,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  cellRoot: {
+    width: 50,
+    height: 84,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderBottomColor: colors.lightGrey,
+    borderBottomWidth: 1,
+  },
+  cellText: {
+    color: colors.black,
+    fontSize: 36,
+    textAlign: 'center',
   },
   focusCell: {
-    borderBottomWidth: 2,
     borderBottomColor: colors.blue,
+    borderBottomWidth: 2,
   },
 });
 

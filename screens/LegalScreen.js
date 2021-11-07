@@ -1,14 +1,61 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { ScrollView, StyleSheet, View, Text } from 'react-native';
 
 import routes from '../navigation/routes';
 import textStyle from '../config/textStyle';
 import BackArrowButton from '../components/BackArrowButton';
+import colors from '../config/colors';
+import Animated from 'react-native-reanimated';
+import GearButton from '../components/GearButton';
 
 function LegalScreen({ navigation }) {
+  const HEADER_MAX_HEIGHT = 120; // max header height
+  const HEADER_MIN_HEIGHT = 60; // min header height
+  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+  const scrollY = useRef(new Animated.Value(0)).current; // our animated value
+
+  // Animated Header Data
+  const titleTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 0, -8],
+    extrapolate: 'clamp',
+  });
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 0, 1],
+    extrapolate: 'clamp',
+  });
+
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <Animated.View
+        style={[
+          styles.stickyHeader,
+          {
+            borderBottomColor: colors.lightGrey,
+            borderBottomWidth: 1,
+            opacity: titleOpacity,
+            transform: [{ translateY: titleTranslateY }],
+          },
+        ]}
+      >
+        <BackArrowButton
+          style={[styles.backButton]}
+          onPress={() => navigation.goBack()}
+        />
+        <Text style={textStyle.headline4}>Terms & Conditions</Text>
+        <GearButton />
+      </Animated.View>
+      <Animated.ScrollView
+        style={{ paddingHorizontal: 16, paddingTop: 20 }}
+        contentContainerStyle={{ paddingTop: 20 }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+      >
         <BackArrowButton
           style={{ paddingTop: 25, paddingBottom: 5 }}
           onPress={() => navigation.goBack()}
@@ -48,8 +95,8 @@ function LegalScreen({ navigation }) {
           und verwendet, um die Nutzung unserer Website und unser Online-Angebot
           zu optimieren.
         </Text>
-      </View>
-    </ScrollView>
+      </Animated.ScrollView>
+    </View>
   );
 }
 
@@ -57,8 +104,20 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 30,
     paddingBottom: 40,
-    paddingHorizontal: 16,
     height: '100%',
+  },
+  stickyHeader: {
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    zIndex: 1,
+    position: 'absolute',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    top: 0,
+    width: '100%',
+    height: 100,
+    backgroundColor: colors.white,
   },
 });
 

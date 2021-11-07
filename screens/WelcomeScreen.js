@@ -13,6 +13,7 @@ import PrimaryButton from '../components/PrimaryButton';
 import textStyle from '../config/textStyle';
 import routes from '../navigation/routes';
 
+// Get Screen Dimensions
 const size = Dimensions.get('screen');
 
 function WelcomeScreen({ navigation }) {

@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import {
   ActivityIndicator,
@@ -45,16 +44,11 @@ function GarageScreen({ navigation }) {
   // Set for Snackbar
   const [visible, setVisible] = useState(false);
 
-  // load Reader
-  const [loadReader, setLoadReader] = useState(-1);
-
-  // if finished Reader
-  const [finishedReader, setFinishedReader] = useState(-1);
-
   const onToggleSnackBar = () => setVisible(!visible);
 
   const onDismissSnackBar = () => setVisible(false);
 
+  // Fetch init Garage Data
   async function fetchGarageData() {
     var readersTemp = [];
     const db = firestore().collection('users').doc('wMDM68wLVShcQz6E8Vsd');
@@ -78,6 +72,7 @@ function GarageScreen({ navigation }) {
           name: item.data()['name'],
           information: item.data()['information'],
           location: item.data()['location'],
+          isLoading: false,
         });
       });
 
@@ -98,16 +93,28 @@ function GarageScreen({ navigation }) {
     }
   }
 
-  async function openReader(id, index) {
-    setLoadReader(index);
+  // Update Reader with an additional second to finish animation
+  async function openReader(id) {
+    const tempReaders = readers;
+    const currentReaderIndex = readers.findIndex((reader) => reader.id == id);
+    tempReaders[currentReaderIndex].isLoading = true;
+
+    setReaders(tempReaders);
+
     await updateReader(id);
-    wait(1000).then(() => setLoadReader(-1));
+
+    tempReaders[currentReaderIndex].isLoading = false;
+    tempReaders[currentReaderIndex].isOpen = false;
+
+    wait(500).then(() => setReaders(readersTemp));
   }
 
+  // Fetch Data when opening App
   useEffect(() => {
     if (isLoading) fetchGarageData();
   });
 
+  // Animated Header Data
   const titleTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
     outputRange: [0, 0, -8],
@@ -157,6 +164,8 @@ function GarageScreen({ navigation }) {
             style={[
               styles.stickyHeader,
               {
+                borderBottomColor: colors.lightGrey,
+                borderBottomWidth: 1,
                 opacity: titleOpacity,
                 transform: [{ translateY: titleTranslateY }],
               },
@@ -199,7 +208,7 @@ function GarageScreen({ navigation }) {
             renderItem={({ item, index }) => {
               return (
                 <ReaderTile
-                  isLoading={loadReader == index ? true : false}
+                  isLoading={item.isLoading}
                   isOpen={item.isOpen}
                   position={
                     index === 0
@@ -209,7 +218,7 @@ function GarageScreen({ navigation }) {
                       : 'center'
                   }
                   title={item.name}
-                  onPress={() => openReader(item.id, index)}
+                  onPress={() => openReader(item.id)}
                   onSeeDetails={() =>
                     navigation.navigate(routes.READER_SCREEN, item)
                   }
@@ -225,18 +234,6 @@ function GarageScreen({ navigation }) {
             onDismiss={onDismissSnackBar}
             visible={visible}
           />
-          {/* <Snackbar
-            visible={visible}
-            onDismiss={onDismissSnackBar}
-            action={{
-              label: 'Undo',
-              onPress: () => {
-                console.log('error');
-              },
-            }}
-          >
-            Hey there! I'm a Snackbar.
-          </Snackbar> */}
         </View>
       )}
     </>
