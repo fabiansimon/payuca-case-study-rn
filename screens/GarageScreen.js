@@ -19,7 +19,7 @@ import GearButton from '../components/GearButton';
 import ReaderTile from '../components/ReaderTile';
 import ParkingSpaceTile from '../components/ParkingSpaceTile';
 import CustomSnackbar from '../components/CustomSnackBar';
-import { updateReader } from '../utils/database';
+import { updateReader, fetchReaders, fetchUserGarage } from '../utils/database';
 
 // To get a longer look the the refreshIndicator
 const wait = (timeout) => {
@@ -27,11 +27,12 @@ const wait = (timeout) => {
 };
 
 function GarageScreen({ navigation }) {
+  const scrollY = useRef(new Animated.Value(0)).current; // our animated value
+
   const HEADER_MAX_HEIGHT = 120; // max header height
   const HEADER_MIN_HEIGHT = 60; // min header height
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-  const scrollY = useRef(new Animated.Value(0)).current; // our animated value
   // Set the whole screen to loading
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,29 +42,19 @@ function GarageScreen({ navigation }) {
   // Update readers --> Should be done with redux
   const [readers, setReaders] = useState([]);
 
-  // Set for Snackbar
+  // Setters for Snackbar
   const [visible, setVisible] = useState(false);
-
   const onToggleSnackBar = () => setVisible(!visible);
-
   const onDismissSnackBar = () => setVisible(false);
 
   // Fetch init Garage Data
   async function fetchGarageData() {
     var readersTemp = [];
-    const db = firestore().collection('users').doc('wMDM68wLVShcQz6E8Vsd');
 
     try {
-      const usersGarage = await db
-        .collection('user-garage')
-        .doc('06wy0CbQnzXAHVNjyzhr')
-        .get();
+      const usersGarage = await fetchUserGarage();
 
-      const userReader = await db
-        .collection('user-garage')
-        .doc('06wy0CbQnzXAHVNjyzhr')
-        .collection('readers')
-        .get();
+      const userReader = await fetchReaders();
 
       userReader.docs.forEach((item) => {
         readersTemp.push({
@@ -95,18 +86,35 @@ function GarageScreen({ navigation }) {
 
   // Update Reader with an additional second to finish animation
   async function openReader(id) {
-    const tempReaders = readers;
-    const currentReaderIndex = readers.findIndex((reader) => reader.id == id);
-    tempReaders[currentReaderIndex].isLoading = true;
+    const index = readers.findIndex((reader) => reader.id == id);
+    let newReaders = [...readers];
+    newReaders[index] = {
+      id: newReaders[index].id,
+      isOpen: newReaders[index].isOpen,
+      isLoading: true,
+      name: newReaders[index].name,
+      information: newReaders[index].information,
+      location: newReaders[index].location,
+    };
 
-    setReaders(tempReaders);
+    setReaders(newReaders);
+
+    console.log('newReaders: ' + newReaders);
+    console.log('updatedReader: ' + newReaders[index]);
 
     await updateReader(id);
 
-    tempReaders[currentReaderIndex].isLoading = false;
-    tempReaders[currentReaderIndex].isOpen = false;
+    let finishedReaders = [...readers];
+    finishedReaders[index] = {
+      id: newReaders[index].id,
+      isOpen: true,
+      isLoading: false,
+      name: newReaders[index].name,
+      information: newReaders[index].information,
+      location: newReaders[index].location,
+    };
 
-    wait(500).then(() => setReaders(readersTemp));
+    wait(500).then(() => setReaders(finishedReaders));
   }
 
   // Fetch Data when opening App
@@ -184,7 +192,7 @@ function GarageScreen({ navigation }) {
             <GearButton style={{ paddingLeft: 20 }} />
           </Animated.View>
           <Animated.FlatList
-            contentContainerStyle={{ paddingTop: HEADER_MAX_HEIGHT - 32 }}
+            contentContainerStyle={{ paddingTop: 88 }}
             scrollEventThrottle={16}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { y: scrollY } } }],

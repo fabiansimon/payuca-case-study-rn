@@ -29,7 +29,7 @@ function EmailScreen({ navigation }) {
   });
 
   // Email Input Hooks
-  const [emailIsValid, setEmailIsValid] = useState(true);
+  const [emailIsValid, setEmailIsValid] = useState(false);
   const [email, setEmail] = useState('');
 
   // Checkbox State
@@ -83,10 +83,10 @@ function EmailScreen({ navigation }) {
             label="Email address"
             keyboardType="email-address"
           />
-          {emailIsValid ? (
-            <Text style={styles.errorText}></Text>
-          ) : (
+          {!emailIsValid && email.length > 0 ? (
             <Text style={styles.errorText}>Invalid email address</Text>
+          ) : (
+            <Text style={styles.errorText}></Text>
           )}
 
           <CheckBoxTile
@@ -110,9 +110,9 @@ function EmailScreen({ navigation }) {
 
           <View style={styles.button}>
             <PrimaryButton
+              isInactive={!(cb1 && cb2 && emailIsValid)}
               onPress={() => {
                 this.viewPager.setPage(1);
-                this.myTextInput.focus();
               }}
               title={'Verify email'}
             />
@@ -122,7 +122,9 @@ function EmailScreen({ navigation }) {
         <View style={styles.confirmationView}>
           <BackArrowButton
             style={{ paddingTop: 25, paddingBottom: 5 }}
-            onPress={() => this.viewPager.setPage(0)}
+            onPress={() => {
+              this.viewPager.setPage(0);
+            }}
           />
           <Text style={[textStyle.headline2, { color: colors.black }]}>
             Verification code
@@ -136,7 +138,9 @@ function EmailScreen({ navigation }) {
             ref={(ref) => {
               this.myTextInput = ref;
             }}
-            {...props}
+            // {...props}
+            placeholder="1"
+            placeholderTextColor={colors.error}
             value={value}
             onChangeText={(text) => {
               setValue(text);
@@ -148,8 +152,6 @@ function EmailScreen({ navigation }) {
             rootStyle={styles.codeFieldRoot}
             keyboardType="number-pad"
             textContentType="oneTimeCode"
-            placeholder="0"
-            placeholderTextColor={colors.lightGrey}
             renderCell={({ index, symbol, isFocused }) => (
               <View
                 onLayout={getCellOnLayoutHandler(index)}
@@ -219,8 +221,8 @@ const styles = StyleSheet.create({
   pagerView: {
     flex: 1,
   },
-  root: { padding: 20, minHeight: 300 },
   codeFieldRoot: {
+    color: colors.error,
     marginTop: 30,
     marginBottom: 30,
     width: 280,
@@ -228,6 +230,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   cellRoot: {
+    color: colors.error,
     width: 50,
     height: 84,
     justifyContent: 'center',
@@ -241,6 +244,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   focusCell: {
+    color: colors.error,
     borderBottomColor: colors.blue,
     borderBottomWidth: 2,
   },

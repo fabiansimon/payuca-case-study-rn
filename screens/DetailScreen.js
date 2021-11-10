@@ -7,43 +7,29 @@ import textStyle from '../config/textStyle';
 import DetailsLabel from '../components/DetailsLabel';
 import Animated from 'react-native-reanimated';
 import WhiteContainer from '../components/WhiteContainer';
+import AnimatedHeader from '../components/AnimatedHeader';
+import GearButton from '../components/GearButton';
 
 function DetailScreen({ navigation, route }) {
-  const HEADER_MAX_HEIGHT = 120; // max header height
-  const HEADER_MIN_HEIGHT = 60; // min header height
-  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
   const scrollY = useRef(new Animated.Value(0)).current; // our animated value
-
-  // Animated Header Data
-  const titleTranslateY = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 0, -8],
-    extrapolate: 'clamp',
-  });
-  const titleOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 0, 1],
-    extrapolate: 'clamp',
-  });
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.stickyHeader,
-          {
-            borderBottomColor: colors.lightGrey,
-            borderBottomWidth: 1,
-            opacity: titleOpacity,
-            transform: [{ translateY: titleTranslateY }],
-          },
-        ]}
-      >
-        <BackArrowButton onPress={() => navigation.goBack()} />
-        <Text style={textStyle.headline4}>Details</Text>
-        <View width={25} />
-      </Animated.View>
+      <AnimatedHeader
+        scrollY={scrollY}
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+        }}
+        content={
+          <>
+            <BackArrowButton onPress={() => navigation.goBack()} />
+            <Text style={textStyle.headline4}>Detail</Text>
+            <View style={{ width: 30 }} />
+          </>
+        }
+      />
       <Animated.ScrollView
         style={{ paddingHorizontal: 16 }}
         contentContainerStyle={{ paddingTop: 20 }}

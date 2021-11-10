@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { SafeAreaView, ScrollView, View, StyleSheet, Text } from 'react-native';
 
 import colors from '../config/colors';
@@ -7,11 +7,37 @@ import WhiteContainer from '../components/WhiteContainer';
 import DetailsLabel from '../components/DetailsLabel';
 import routes from '../navigation/routes';
 import BackArrowButton from '../components/BackArrowButton';
+import AnimatedHeader from '../components/AnimatedHeader';
+import Animated from 'react-native-reanimated';
 
 function HelpScreen({ navigation }) {
+  const scrollY = useRef(new Animated.Value(0)).current; // our animated value
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <AnimatedHeader
+        scrollY={scrollY}
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+        }}
+        content={
+          <>
+            <BackArrowButton onPress={() => navigation.goBack()} />
+            <Text style={textStyle.headline4}>Hi, how can we help you?</Text>
+            <View style={{ width: 10 }} />
+          </>
+        }
+      />
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: 20, paddingHorizontal: 16 }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+      >
         <SafeAreaView>
           <BackArrowButton
             style={{ paddingTop: 25, paddingBottom: 5 }}
@@ -74,7 +100,7 @@ function HelpScreen({ navigation }) {
             />
           </WhiteContainer>
         </SafeAreaView>
-      </ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 }
@@ -83,7 +109,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.screenBackground,
     height: '100%',
-    paddingHorizontal: 16,
+    width: '100%',
   },
 });
 

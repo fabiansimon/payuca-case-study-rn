@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "718282325757",
+    "project_id": "payuca-case-study",
+    "storage_bucket": "payuca-case-study.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718282325757:android:bad29c2e811ee86fe5c894",
+        "android_client_info": {
+          "package_name": "com.fabiansimon.payucaCaseStudyRN"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "718282325757-48cd924a08lauft1n3sjrm8opk5mrv8r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpfu1rmuWIJavj2gS8GyLeJSkFva8fjhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "718282325757-48cd924a08lauft1n3sjrm8opk5mrv8r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "718282325757-1g09gpo07q3oc45dnnkn7efh7ta3i6pb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.fabiansimon.payuca-case-study-flutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
